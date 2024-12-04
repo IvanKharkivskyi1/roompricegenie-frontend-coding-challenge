@@ -1,4 +1,4 @@
-import { Text } from '@mantine/core';
+import { Box, Divider, Text } from '@mantine/core';
 import React from 'react';
 
 interface PriceDisplayProps {
@@ -16,13 +16,23 @@ export const PriceDisplay: React.FC<PriceDisplayProps> = ({
   pmsPrice,
   currencySymbol,
 }) => {
-
   return (
-    <div style={{ minWidth: '150px' }}>
-      <Text size="sm" color="dimmed">Date: {date}</Text>
-      <Text size="sm" color="red">Room: {roomId}</Text>
-      <Text>Recommended: {currencySymbol}{recommendedPrice}</Text>
-      <Text>PMS: {pmsPrice ? `${currencySymbol}${pmsPrice}` : 'N/A'}</Text>
-    </div>
+    <Box bg="blue.1" p={4}>
+      <Text size="sm" color="dimmed">
+        Date: {date}
+      </Text>
+      <Text size="sm" c="blue">
+        Room: {roomId}
+      </Text>
+      <Box>
+        <Text fw={500}>Recom:</Text> {currencySymbol}
+        {recommendedPrice}
+      </Box>
+      <Box>
+        <Text fw={500}>PMS:</Text>{' '}
+        {pmsPrice ? `${currencySymbol}${pmsPrice}` : 'N/A'}
+      </Box>
+      <Divider size="md" />
+    </Box>
   );
 };

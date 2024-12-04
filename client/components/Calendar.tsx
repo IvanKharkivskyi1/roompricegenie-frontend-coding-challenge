@@ -1,38 +1,44 @@
-import {
-  Flex,
-  Grid,
-  LoadingOverlay,
-  Paper,
-  Select,
-  Text,
-} from '@mantine/core';
+import { Flex, Grid, LoadingOverlay, Paper, Select, Text } from '@mantine/core';
 import {
   addMonths,
   eachDayOfInterval,
   endOfMonth,
   format,
   startOfMonth,
-  type Locale,
 } from 'date-fns';
+import { formatWithOptions, type Locale } from 'date-fns/fp';
 import { de, enUS, fr } from 'date-fns/locale';
 import React, { useState } from 'react';
 import { usePrices, useSettings } from '../../api/api';
-import { CalendarNavigation, PriceDisplay, RoomSelector } from '../ui-components/';
+import {
+  CalendarNavigation,
+  PriceDisplay,
+  RoomSelector,
+} from '../ui-components/';
 
 const localeMap: Record<string, Locale> = {
   'en-US': enUS,
-  'fr': fr,
-  'de': de,
+  fr: fr,
+  de: de,
 };
 
 export const Calendar: React.FC = () => {
-  const { data: pricesData, isLoading: loadingPrices, error: pricesError } = usePrices();
-  const { data: settingsData, isLoading: loadingSettings, error: settingsError } = useSettings();
+  const {
+    data: pricesData,
+    isLoading: loadingPrices,
+    error: pricesError,
+  } = usePrices();
+  const {
+    data: settingsData,
+    isLoading: loadingSettings,
+    error: settingsError,
+  } = useSettings();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedRoom, setSelectedRoom] = useState<string | null>(null);
 
   if (loadingPrices || loadingSettings) return <LoadingOverlay />;
-  if (pricesError || settingsError) return <Text color="red">Failed to load data</Text>;
+  if (pricesError || settingsError)
+    return <Text color="red">Failed to load data</Text>;
 
   const timezone = settingsData?.hotel.timezone;
   const localeString = settingsData?.hotel.locale || 'en-US';
@@ -45,11 +51,12 @@ export const Calendar: React.FC = () => {
   });
 
   const handleNextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
-  const handlePreviousMonth = () => setCurrentMonth(addMonths(currentMonth, -1));
+  const handlePreviousMonth = () =>
+    setCurrentMonth(addMonths(currentMonth, -1));
 
   const monthOptions = Array.from({ length: 12 }, (_, i) => ({
     value: i.toString(),
-    label: format(new Date(2023, i), 'MMMM', { locale: selectedLocale }),
+    label: format(new Date(2023, i), 'MMMM'),
   }));
 
   const yearOptions = Array.from({ length: 5 }, (_, i) => ({
@@ -73,13 +80,17 @@ export const Calendar: React.FC = () => {
     setSelectedRoom(value);
   };
 
+  const formatDateWithLocale = formatWithOptions({ locale: selectedLocale });
+
   return (
-    <Paper shadow="sm">
+    <Paper shadow="sm" p="25px">
       {lastRunTime && (
         <Text mb="md" size="sm" color="dimmed">
-          Last Pricing Run: {format(new Date(lastRunTime), 'PPpp', { locale: selectedLocale })}
+          Last Pricing Run:{' '}
+          {formatDateWithLocale('PPpp', new Date(lastRunTime))}
         </Text>
       )}
+
       <Flex mb="sm" direction="column" gap="sm">
         <Flex gap="sm" align="flex-end">
           <Select
@@ -98,8 +109,14 @@ export const Calendar: React.FC = () => {
             size="sm"
             aria-label="Select Year"
           />
-          <RoomSelector rooms={settingsData.rooms} onChange={handleRoomChange} />
-          <CalendarNavigation onPrevious={handlePreviousMonth} onNext={handleNextMonth} />
+          <RoomSelector
+            rooms={settingsData.rooms}
+            onChange={handleRoomChange}
+          />
+          <CalendarNavigation
+            onPrevious={handlePreviousMonth}
+            onNext={handleNextMonth}
+          />
         </Flex>
       </Flex>
 
@@ -112,11 +129,13 @@ export const Calendar: React.FC = () => {
             <Grid.Col key={formattedDate} span={1}>
               {roomPrices ? (
                 Object.entries(roomPrices)
-                  .filter(([roomId]) => !selectedRoom || roomId === selectedRoom)
+                  .filter(
+                    ([roomId]) => !selectedRoom || roomId === selectedRoom
+                  )
                   .map(([roomId, { price, price_in_pms }]) => (
                     <PriceDisplay
                       key={roomId}
-                      date={format(day, 'dd MMM yyyy', { locale: selectedLocale })}
+                      date={formatDateWithLocale('dd', day)}
                       roomId={roomId}
                       recommendedPrice={price}
                       pmsPrice={price_in_pms}
