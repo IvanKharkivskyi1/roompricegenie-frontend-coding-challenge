@@ -1,5 +1,5 @@
 import { Box, Divider, Text } from '@mantine/core';
-import React from 'react';
+import * as React from 'react';
 
 interface PriceDisplayProps {
   date: string;
@@ -18,7 +18,7 @@ export const PriceDisplay: React.FC<PriceDisplayProps> = ({
 }) => {
   return (
     <Box bg="blue.1" p={4}>
-      <Text size="sm" color="dimmed">
+      <Text size="sm" c="dimmed">
         Date: {date}
       </Text>
       <Text size="sm" c="blue">

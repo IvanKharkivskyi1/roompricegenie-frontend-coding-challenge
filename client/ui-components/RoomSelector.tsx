@@ -1,5 +1,5 @@
 import { Select } from '@mantine/core';
-import React from 'react';
+import * as React from 'react';
 
 interface RoomSelectorProps {
   rooms: {
@@ -9,7 +9,10 @@ interface RoomSelectorProps {
   onChange: (value: string | null) => void;
 }
 
-export const RoomSelector: React.FC<RoomSelectorProps> = ({ rooms, onChange }) => {
+export const RoomSelector: React.FC<RoomSelectorProps> = ({
+  rooms,
+  onChange,
+}) => {
   const roomOptions = [
     { value: '', label: 'All Rooms' },
     { value: rooms.reference.id.toString(), label: rooms.reference.name },

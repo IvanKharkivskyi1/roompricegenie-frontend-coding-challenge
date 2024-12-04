@@ -5,10 +5,13 @@ import {
   endOfMonth,
   format,
   startOfMonth,
+  type Locale,
 } from 'date-fns';
-import { formatWithOptions, type Locale } from 'date-fns/fp';
+import { formatWithOptions } from 'date-fns/fp';
 import { de, enUS, fr } from 'date-fns/locale';
-import React, { useState } from 'react';
+import * as React from 'react';
+const { useState } = React;
+
 import { usePrices, useSettings } from '../../api/api';
 import {
   CalendarNavigation,
@@ -38,7 +41,7 @@ export const Calendar: React.FC = () => {
 
   if (loadingPrices || loadingSettings) return <LoadingOverlay />;
   if (pricesError || settingsError)
-    return <Text color="red">Failed to load data</Text>;
+    return <Text c="red">Failed to load data</Text>;
 
   const timezone = settingsData?.hotel.timezone;
   const localeString = settingsData?.hotel.locale || 'en-US';
@@ -85,7 +88,7 @@ export const Calendar: React.FC = () => {
   return (
     <Paper shadow="sm" p="25px">
       {lastRunTime && (
-        <Text mb="md" size="sm" color="dimmed">
+        <Text mb="md" size="sm" c="dimmed">
           Last Pricing Run:{' '}
           {formatDateWithLocale('PPpp', new Date(lastRunTime))}
         </Text>
